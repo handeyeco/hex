@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Canvas Hexagonal Map</title>
+  <style type="text/css">
+    body {
+      margin: 0;
+    }
+
+    .container {
+      margin: auto;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container" class="container"></div>
+</body>
+
+</html>
+
+<script>
+  (function() {
+    let container = document.getElementById('container');
+    let maxWin = Math.max(window.innerHeight, window.innerWidth);
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+
+    let hexagonAngle = 0.523598776; // 30 degrees in radians
+    let sideLength = maxWin / 60;
+    let hexHeight = Math.sin(hexagonAngle) * sideLength;
+    let hexRadius = Math.cos(hexagonAngle) * sideLength;
+    let hexRectangleHeight = sideLength + 2 * hexHeight;
+    let hexRectangleWidth = 2 * hexRadius;
+
+    console.log(`sideLength: ${sideLength}`);
+    console.log(`hexHeight: ${hexHeight}`);
+    console.log(`hexRadius: ${hexRadius}`);
+    console.log(`hexRectangleHeight: ${hexRectangleHeight}`);
+    console.log(`hexRectangleWidth: ${hexRectangleWidth}`);
+
+    let boardWidth = 60;
+    let boardHeight = 60;
+
+    container.style.width = window.innerWidth + 'px';
+    container.style.height = window.innerHeight + 'px';
+
+    canvas.width = window.innerWidth + hexRectangleWidth;
+    canvas.height = window.innerHeight + hexRectangleHeight;
+    container.appendChild(canvas);
+    ctx.lineWidth = 0.1;
+
+    drawBoard(ctx, boardWidth, boardHeight);
+
+    canvas.addEventListener("mousemove", e => {
+      drawBoard(ctx, boardWidth, boardHeight, e.offsetX, e.offsetY);
+    });
+
+    function drawBoard(canvasContext, width, height, mouseX, mouseY) {
+      let x, y;
+
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+          x = Math.floor(i * hexRectangleWidth + ((j % 2) * hexRadius));
+          y = Math.floor(j * (sideLength + hexHeight));
+
+          drawHexagon(ctx, x, y, mouseX, mouseY);
+        }
+      }
+    }
+
+    function drawHexagon(canvasContext, x, y, mouseX, mouseY) {
+      if (y > window.innerHeight / 2) {
+        canvasContext.fillStyle = "steelblue";
+        canvasContext.strokeStyle = "steelblue";
+      } else {
+        canvasContext.fillStyle = "maroon";
+        canvasContext.strokeStyle = "maroon";
+      }
+
+      canvasContext.beginPath();
+      canvasContext.moveTo(x + hexRadius, y);
+      canvasContext.lineTo(x + hexRectangleWidth, y + hexHeight);
+      canvasContext.lineTo(x + hexRectangleWidth, y + hexHeight + sideLength);
+      canvasContext.lineTo(x + hexRadius, y + hexRectangleHeight);
+      canvasContext.lineTo(x, y + sideLength + hexHeight);
+      canvasContext.lineTo(x, y + hexHeight);
+      canvasContext.closePath();
+
+      if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
+        canvasContext.fill();
+      } else {
+        canvasContext.stroke();
+      }
+    }
+
+  })();
+</script>
