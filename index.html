@@ -31,9 +31,10 @@
     let maxWin = Math.max(window.innerHeight, window.innerWidth);
     let canvas = document.createElement('canvas');
     let ctx = canvas.getContext('2d');
+    let boardDimension = 60;
 
     let hexagonAngle = 0.523598776; // 30 degrees in radians
-    let sideLength = maxWin / 60;
+    let sideLength = maxWin / boardDimension;
     let hexHeight = Math.sin(hexagonAngle) * sideLength;
     let hexRadius = Math.cos(hexagonAngle) * sideLength;
     let hexRectangleHeight = sideLength + 2 * hexHeight;
@@ -45,21 +46,17 @@
     console.log(`hexRectangleHeight: ${hexRectangleHeight}`);
     console.log(`hexRectangleWidth: ${hexRectangleWidth}`);
 
-    let boardWidth = 60;
-    let boardHeight = 60;
-
     container.style.width = window.innerWidth + 'px';
     container.style.height = window.innerHeight + 'px';
-
     canvas.width = window.innerWidth + hexRectangleWidth;
     canvas.height = window.innerHeight + hexRectangleHeight;
     container.appendChild(canvas);
     ctx.lineWidth = 0.1;
 
-    drawBoard(ctx, boardWidth, boardHeight);
+    drawBoard(ctx, boardDimension, boardDimension);
 
     canvas.addEventListener("mousemove", e => {
-      drawBoard(ctx, boardWidth, boardHeight, e.offsetX, e.offsetY);
+      drawBoard(ctx, boardDimension, boardDimension, e.offsetX, e.offsetY);
     });
 
     function drawBoard(canvasContext, width, height, mouseX, mouseY) {
