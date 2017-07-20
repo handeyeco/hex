@@ -14,7 +14,6 @@
   canvas.width = window.innerWidth + hex.rectangleWidth;
   canvas.height = window.innerHeight + hex.rectangleHeight;
   container.appendChild(canvas);
-  ctx.lineWidth = 0.1;
 
   canvas.addEventListener("mousemove", e => {
     drawBoard(ctx, e.offsetX, e.offsetY);

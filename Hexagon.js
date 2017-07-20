@@ -7,22 +7,31 @@ const hexagonPrototypeGenerator = function (sideLength) {
   const rectangleWidth = 2 * radius;
 
   const draw = function (canvasContext, mouseX, mouseY) {
-    canvasContext.fillStyle = this.color;
-    canvasContext.strokeStyle = this.color;
+    let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
+    if (distance < this.radius * 10) {
+      canvasContext.fillStyle = this.color;
+      canvasContext.strokeStyle = this.color;
+      let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
 
-    canvasContext.beginPath();
-    canvasContext.moveTo(this.vector1[0], this.vector1[1]);
-    canvasContext.lineTo(this.vector2[0], this.vector2[1]);
-    canvasContext.lineTo(this.vector3[0], this.vector3[1]);
-    canvasContext.lineTo(this.vector4[0], this.vector4[1]);
-    canvasContext.lineTo(this.vector5[0], this.vector5[1]);
-    canvasContext.lineTo(this.vector6[0], this.vector6[1]);
-    canvasContext.closePath();
+      canvasContext.beginPath();
+      canvasContext.moveTo(this.vector1[0], this.vector1[1]);
+      canvasContext.lineTo(this.vector2[0], this.vector2[1]);
+      canvasContext.lineTo(this.vector3[0], this.vector3[1]);
+      canvasContext.lineTo(this.vector4[0], this.vector4[1]);
+      canvasContext.lineTo(this.vector5[0], this.vector5[1]);
+      canvasContext.lineTo(this.vector6[0], this.vector6[1]);
+      canvasContext.closePath();
 
-    if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
-      console.log(this);
+      canvasContext.globalAlpha = Math.max(((1 / (10 * this.radius)) * -1) * distance + 1, 0);
+
+      if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
+        canvasContext.globalAlpha = 1.0;
+      } else {
+        let distanceOpacity = ((1 / (10 * this.radius)) * -1) * distance + 1;
+        canvasContext.globalAlpha = Math.max(distanceOpacity - this.randomness, 0);
+      }
+
       canvasContext.fill();
-    } else {
       canvasContext.stroke();
     }
   }
@@ -39,12 +48,15 @@ const hexagonPrototypeGenerator = function (sideLength) {
 
 // Variables specific to individual hexagons
 const Hexagon = function (x, y, hex) {
-  let color = "steelblue";
+  let color = "maroon";
 
   const newHex = {
     x,
     y,
     color,
+    randomness: Math.random(),
+    centerX: x + hex.rectangleWidth / 2,
+    centerY: y + hex.sideLength,
     vector1: [x + hex.radius, y],
     vector2: [x + hex.rectangleWidth, y + hex.height],
     vector3: [x + hex.rectangleWidth, y + hex.height + hex.sideLength],
