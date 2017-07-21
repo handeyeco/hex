@@ -11,7 +11,6 @@ const hexagonPrototypeGenerator = function (sideLength) {
     if (distance < this.radius * 10) {
       canvasContext.fillStyle = this.color;
       canvasContext.strokeStyle = this.color;
-      let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
 
       canvasContext.beginPath();
       canvasContext.moveTo(this.vector1[0], this.vector1[1]);
@@ -21,8 +20,6 @@ const hexagonPrototypeGenerator = function (sideLength) {
       canvasContext.lineTo(this.vector5[0], this.vector5[1]);
       canvasContext.lineTo(this.vector6[0], this.vector6[1]);
       canvasContext.closePath();
-
-      canvasContext.globalAlpha = Math.max(((1 / (10 * this.radius)) * -1) * distance + 1, 0);
 
       if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
         canvasContext.globalAlpha = 1.0;

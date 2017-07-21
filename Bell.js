@@ -1,0 +1,4 @@
+function Bell (frequency) {
+}
+
+Bell();

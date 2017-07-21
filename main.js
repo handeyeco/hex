@@ -33,5 +33,5 @@
     }
   }
 
-  drawBoard(ctx, boardDimension, boardDimension);
+  drawBoard(ctx, hex.radius * 14, window.innerHeight - hex.radius * 4);
 })();
