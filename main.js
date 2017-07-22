@@ -24,12 +24,12 @@
     hexCollect.forEach(hexagon => { hexagon.draw(canvasContext, mouseX, mouseY) });
   }
 
-  for (let i = 0, x, y; i < boardDimension; i++) {
+  for (let i = 0, index = 0, x, y; i < boardDimension; i++) {
     for (let j = 0; j < boardDimension; j++) {
       x = Math.floor(i * hex.rectangleWidth + ((j % 2) * hex.radius));
       y = Math.floor(j * (hex.sideLength + hex.height));
 
-      hexCollect.push(Hexagon(x, y, hex));
+      hexCollect.push(Hexagon(x, y, index++, frequencies[index % frequencies.length], hex));
     }
   }
 
