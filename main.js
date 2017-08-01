@@ -29,7 +29,7 @@
       x = Math.floor(i * hex.rectangleWidth + ((j % 2) * hex.radius));
       y = Math.floor(j * (hex.sideLength + hex.height));
 
-      hexCollect.push(Hexagon(x, y, index++, frequencies[index % frequencies.length], hex));
+      hexCollect.push(Hexagon(x, y, index++, j % 4 == 0 ? frequencies[j % frequencies.length] : 0, hex));
     }
   }
 

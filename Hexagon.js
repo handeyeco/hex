@@ -7,23 +7,26 @@ const hexagonPrototypeGenerator = function (sideLength) {
   const rectangleWidth = 2 * radius;
 
   let lastHexIndex = null;
+  let count = 0;
 
   const draw = function (canvasContext, mouseX, mouseY) {
+    let safeHexRadius =  this.radius * 10; //Math.min(Math.max(count, 1), 20);
     let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
-    if (distance < this.radius * 10) {
+    if (distance < safeHexRadius) {
       this.drawHexShape(canvasContext);
 
       if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
         canvasContext.globalAlpha = 1.0;
 
         if (this.index !== lastHexIndex) {
-          console.log(this);
           lastHexIndex = this.index;
+          count++;
+          console.log(count);
           // Bell(this.frequency);
         }
 
       } else {
-        let distanceOpacity = ((1 / (10 * this.radius)) * -1) * distance + 1;
+        let distanceOpacity = ((1 / safeHexRadius) * -1) * distance + 1;
         canvasContext.globalAlpha = Math.max(distanceOpacity - this.randomness, 0);
       }
 

@@ -1,6 +1,11 @@
 const ac = new AudioContext();
 const masterGain = ac.createGain();
-masterGain.connect(ac.destination);
+const reverb = new SimpleReverb(ac, {
+      seconds: 2,
+      decay: 5,
+    });
+reverb.connect(ac.destination);
+masterGain.connect(reverb.input);
 masterGain.gain.value = 0.5;
 
 let bellCollect = []
