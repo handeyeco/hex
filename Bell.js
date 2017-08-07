@@ -1,51 +1,75 @@
-const ac = new AudioContext();
-const masterGain = ac.createGain();
-const reverb = new SimpleReverb(ac, {
-      seconds: 2,
-      decay: 5,
-    });
-reverb.connect(ac.destination);
-masterGain.connect(reverb.input);
-masterGain.gain.value = 0.5;
+class Bell {
+  constructor(audioContext, index) {
+    const gain = audioContext.createGain();
+    gain.gain.value = 0;
 
-let bellCollect = []
-const frequencies = [622.25, 698.45, 739.98, 830.60, 880.00, 987.76, 1046.50, 1174.65, 1244.50]
+    const triangle = audioContext.createOscillator();
+    triangle.type = 'sine';
 
-function Bell (frequency = 500) {
-  cleanBells();
+    const sine = audioContext.createOscillator();
+    sine.type = 'triangle';
 
-  const osc1 = ac.createOscillator();
-  const osc2 = ac.createOscillator();
-  const gain = ac.createGain();
+    sine.connect(gain);
+    triangle.connect(gain);
 
-  gain.gain.value = 1;
-  gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 1);
-  gain.gain.linearRampToValueAtTime(0, ac.currentTime + 1);
-  gain.connect(masterGain);
+    sine.start();
+    triangle.start();
 
-  osc1.type = "sine";
-  osc1.frequency.value = frequency;
-  osc2.type = "triangle";
-  osc2.frequency.value = frequency;
+    this.index        = index;
+    this.gain         = gain;
+    this.sine         = sine;
+    this.triangle     = triangle;
+    this.audioContext = audioContext;
+  }
 
-  osc1.connect(gain);
-  osc2.connect(gain);
-  osc1.start();
-  osc2.start();
+  ring (freq) {
+    this.sine.frequency.setValueAtTime(freq, 0);
+    this.triangle.frequency.setValueAtTime(freq, 0);
 
-  bellCollect.push({ osc1, osc2, gain });
+    this.gain.gain.linearRampToValueAtTime(1, this.audioContext.currentTime + 0.2);
+    this.gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 1);
+    this.gain.gain.setValueAtTime(0, this.audioContext.currentTime + 1);
+  }
 }
 
-function cleanBells() {
-  bellCollect = bellCollect.filter(bell => {
-    if (bell.gain.gain.value <= 0.02) {
-      bell.osc1.stop();
-      bell.osc2.stop();
-      bell.osc1.disconnect();
-      bell.osc2.disconnect();
-      bell.gain.disconnect();
-      return false;
+class BellChorus {
+  constructor (simpleReverb, numberOfBells = 4) {
+    const ac = new window.AudioContext();
+
+    const masterGain = ac.createGain();
+    masterGain.gain.value = 0;
+
+    const reverb = new simpleReverb(ac);
+    const wet = ac.createGain();
+    wet.gain.value = 0.8;
+    const dry = ac.createGain();
+    dry.gain.value = 0.2;
+
+    const bellCollection = [];
+    for (let i = 0; i < numberOfBells; i++) {
+      let bell = new Bell(ac, i);
+      bell.gain.connect(dry);
+      bell.gain.connect(wet);
+      bellCollection.push(bell);
     }
-    return true;
-  });
+
+    wet.connect(reverb.input)
+    reverb.connect(masterGain);
+    dry.connect(masterGain);
+    masterGain.connect(ac.destination);
+
+    this.count = 0;
+    this.masterGain = masterGain;
+    this.bellCollection = bellCollection;
+  }
+
+  ringBell(frequency) {
+    this.bellCollection[this.count % this.bellCollection.length].ring(frequency);
+    this.count++;
+  }
+
+  toggleVolume() {
+    // Bitwise XOR
+    return this.masterGain.gain.value ^= 1;
+  }
 }

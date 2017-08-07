@@ -5,17 +5,11 @@ const hexagonPrototypeGenerator = function (sideLength) {
   const radius = Math.cos(angle) * sideLength;
   const rectangleHeight = sideLength + 2 * height;
   const rectangleWidth = 2 * radius;
-  let frequencies = [];
-  [415.3,466.16,523.25,554.37,622.25,698.46,783.99].forEach(elem => {
-    frequencies.push(elem / 2, elem, elem * 2);
-  });
-  frequencies = frequencies.sort();
 
   let lastHexIndex = null;
-  let count = 0;
 
-  const draw = function (canvasContext, mouseX, mouseY, ac) {
-    let safeHexRadius =  this.radius * 10; //Math.min(Math.max(count, 1), 20);
+  const drawMouse = function (canvasContext, mouseX, mouseY, bells) {
+    let safeHexRadius =  this.radius * 10;
     let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
     if (distance < safeHexRadius) {
       this.drawHexShape(canvasContext);
@@ -23,17 +17,26 @@ const hexagonPrototypeGenerator = function (sideLength) {
       if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
         canvasContext.globalAlpha = 1.0;
 
-        if (this.index !== lastHexIndex) {
-          lastHexIndex = this.index;
-          count++;
-          // ac.updateFrequency(this.frequencies[count % this.frequencies.length]);
-          ac.updateFrequency(this.frequency);
+        if (bells) {
+          bells.ringBell(this.frequency);
         }
 
       } else {
         let distanceOpacity = ((1 / safeHexRadius) * -1) * distance + 1;
         canvasContext.globalAlpha = Math.max(distanceOpacity - this.randomness, 0);
       }
+
+      canvasContext.fillStyle = this.color;
+      canvasContext.strokeStyle = this.color;
+      canvasContext.fill();
+      canvasContext.stroke();
+    }
+  }
+
+  const drawKey = function (canvasContext, activeFreqs) {
+    if (activeFreqs.indexOf(this.frequency) !== -1) {
+      canvasContext.globalAlpha = this.randomness;
+      this.drawHexShape(canvasContext);
 
       canvasContext.fillStyle = this.color;
       canvasContext.strokeStyle = this.color;
@@ -59,9 +62,9 @@ const hexagonPrototypeGenerator = function (sideLength) {
     radius,
     rectangleHeight,
     rectangleWidth,
-    draw,
+    drawMouse,
+    drawKey,
     drawHexShape,
-    frequencies
   }
 }
 
