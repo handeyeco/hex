@@ -6,6 +6,7 @@
   let maxWin = Math.max(window.innerHeight, window.innerWidth);
   let boardDimension = 60;
 
+  const theremin = new Theremin(SimpleReverb);
   const hex = hexagonPrototypeGenerator(maxWin / boardDimension)
   const hexCollect = [];
 
@@ -16,12 +17,20 @@
   container.appendChild(canvas);
 
   canvas.addEventListener("mousemove", e => {
+    theremin.waveFormCrossfade(e.offsetX / window.innerWidth);
+    theremin.reverbCrossfade(e.offsetY / window.innerHeight);
     drawBoard(ctx, e.offsetX, e.offsetY);
+  });
+
+  window.addEventListener("keyup", e => {
+    if (e.key === "a") {
+      theremin.toggleAudio();
+    }
   });
 
   function drawBoard(canvasContext, mouseX, mouseY) {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    hexCollect.forEach(hexagon => { hexagon.draw(canvasContext, mouseX, mouseY) });
+    hexCollect.forEach(hexagon => { hexagon.draw(canvasContext, mouseX, mouseY, theremin) });
   }
 
   for (let i = 0, index = 0, x, y; i < boardDimension; i++) {
@@ -29,7 +38,7 @@
       x = Math.floor(i * hex.rectangleWidth + ((j % 2) * hex.radius));
       y = Math.floor(j * (hex.sideLength + hex.height));
 
-      hexCollect.push(Hexagon(x, y, index++, j % 4 == 0 ? frequencies[j % frequencies.length] : 0, hex));
+      hexCollect.push(Hexagon(x, y, index++, 1000 + index, hex));
     }
   }
 

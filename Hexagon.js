@@ -5,11 +5,16 @@ const hexagonPrototypeGenerator = function (sideLength) {
   const radius = Math.cos(angle) * sideLength;
   const rectangleHeight = sideLength + 2 * height;
   const rectangleWidth = 2 * radius;
+  let frequencies = [];
+  [415.3,466.16,523.25,554.37,622.25,698.46,783.99].forEach(elem => {
+    frequencies.push(elem / 2, elem, elem * 2);
+  });
+  frequencies = frequencies.sort();
 
   let lastHexIndex = null;
   let count = 0;
 
-  const draw = function (canvasContext, mouseX, mouseY) {
+  const draw = function (canvasContext, mouseX, mouseY, ac) {
     let safeHexRadius =  this.radius * 10; //Math.min(Math.max(count, 1), 20);
     let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
     if (distance < safeHexRadius) {
@@ -21,8 +26,8 @@ const hexagonPrototypeGenerator = function (sideLength) {
         if (this.index !== lastHexIndex) {
           lastHexIndex = this.index;
           count++;
-          console.log(count);
-          // Bell(this.frequency);
+          // ac.updateFrequency(this.frequencies[count % this.frequencies.length]);
+          ac.updateFrequency(this.frequency);
         }
 
       } else {
@@ -55,7 +60,8 @@ const hexagonPrototypeGenerator = function (sideLength) {
     rectangleHeight,
     rectangleWidth,
     draw,
-    drawHexShape
+    drawHexShape,
+    frequencies
   }
 }
 

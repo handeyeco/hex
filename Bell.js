@@ -37,7 +37,6 @@ function Bell (frequency = 500) {
 }
 
 function cleanBells() {
-  console.log(bellCollect);
   bellCollect = bellCollect.filter(bell => {
     if (bell.gain.gain.value <= 0.02) {
       bell.osc1.stop();
