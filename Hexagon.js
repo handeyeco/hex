@@ -6,8 +6,6 @@ const hexagonPrototypeGenerator = function (sideLength) {
   const rectangleHeight = sideLength + 2 * height;
   const rectangleWidth = 2 * radius;
 
-  let lastHexIndex = null;
-
   const drawMouse = function (canvasContext, mouseX, mouseY, bells) {
     let safeHexRadius =  this.radius * 10;
     let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));

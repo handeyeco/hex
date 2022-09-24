@@ -1,1 +1,5 @@
-const frequencies = [415.3,523.25,783.99,415.3,698.46,783.99,622.25,554.37,415.3,523.25,783.99,415.3,698.46,783.99,415.3,466.16];
+# hex
+
+minimalist, generative project built with Canvas and the Web Audio API
+
+

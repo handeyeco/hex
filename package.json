@@ -1,0 +1,10 @@
+{
+  "name": "hex",
+  "scripts": {
+    "start": "npx http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handeyeco/hex.git"
+  }
+}

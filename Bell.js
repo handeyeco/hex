@@ -33,11 +33,11 @@ class Bell {
 }
 
 class BellChorus {
-  constructor (simpleReverb, numberOfBells = 4) {
+  constructor (simpleReverb, numberOfBells = 8) {
     const ac = new window.AudioContext();
 
     const masterGain = ac.createGain();
-    masterGain.gain.value = 0;
+    masterGain.gain.value = 1;
 
     const reverb = new simpleReverb(ac);
     const wet = ac.createGain();
