@@ -1,6 +1,7 @@
 (function () {
   const installation = new URLSearchParams(window.location.search).get('installation') !== null;
   let control = document.getElementById('control');
+  let fullscreen = document.getElementById('fullscreen');
   if (installation) {
     control.style.display = 'none'
   }
@@ -71,6 +72,19 @@
       drawForMouseAndClick(ctx, x, y)
     }
     console.log(activeFreqs)
+  });
+
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      fullscreen.style.display = 'none'
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+
+  fullscreen.addEventListener("click", e => {
+    toggleFullScreen()
   });
 
   function initAudio() {
