@@ -49,13 +49,12 @@ class BellChorus {
 
     const filter = ac.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 800;
+    filter.frequency.value = 1000;
 
     const bellCollection = [];
     for (let i = 0; i < numberOfBells; i++) {
       let bell = new Bell(ac, i);
-      bell.gain.connect(dry);
-      bell.gain.connect(wet);
+      bell.gain.connect(compressor);
       bellCollection.push(bell);
     }
 
