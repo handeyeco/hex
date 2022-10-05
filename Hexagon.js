@@ -7,21 +7,27 @@ const hexagonPrototypeGenerator = function (sideLength) {
   const rectangleWidth = 2 * radius;
 
   const drawMouse = function (canvasContext, mouseX, mouseY, bells) {
-    let safeHexRadius =  this.radius * 10;
-    let distance = Math.sqrt(Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2));
+    let safeHexRadius = this.radius * 10;
+    let distance = Math.sqrt(
+      Math.pow(this.centerX - mouseX, 2) + Math.pow(this.centerY - mouseY, 2)
+    );
+
     if (distance < safeHexRadius) {
       this.drawHexShape(canvasContext);
 
-      if (mouseX && mouseY && canvasContext.isPointInPath(mouseX, mouseY)) {
+      const scale = window.devicePixelRatio || 1;
+      if (canvasContext.isPointInPath(mouseX * scale, mouseY * scale)) {
         canvasContext.globalAlpha = 1.0;
 
         if (bells) {
           bells.ringBell(this.frequency);
         }
-
       } else {
-        let distanceOpacity = ((1 / safeHexRadius) * -1) * distance + 1;
-        canvasContext.globalAlpha = Math.max(distanceOpacity - this.randomness, 0);
+        let distanceOpacity = (1 / safeHexRadius) * -1 * distance + 1;
+        canvasContext.globalAlpha = Math.max(
+          distanceOpacity - this.randomness,
+          0
+        );
       }
 
       canvasContext.fillStyle = this.color;
@@ -29,7 +35,7 @@ const hexagonPrototypeGenerator = function (sideLength) {
       canvasContext.fill();
       canvasContext.stroke();
     }
-  }
+  };
 
   const drawKey = function (canvasContext, activeFreqs) {
     if (activeFreqs.indexOf(this.frequency) !== -1) {
@@ -41,7 +47,7 @@ const hexagonPrototypeGenerator = function (sideLength) {
       canvasContext.fill();
       canvasContext.stroke();
     }
-  }
+  };
 
   const drawHexShape = function (canvasContext) {
     canvasContext.beginPath();
@@ -52,7 +58,7 @@ const hexagonPrototypeGenerator = function (sideLength) {
     canvasContext.lineTo(this.vector5[0], this.vector5[1]);
     canvasContext.lineTo(this.vector6[0], this.vector6[1]);
     canvasContext.closePath();
-  }
+  };
 
   return {
     sideLength,
@@ -63,8 +69,8 @@ const hexagonPrototypeGenerator = function (sideLength) {
     drawMouse,
     drawKey,
     drawHexShape,
-  }
-}
+  };
+};
 
 // Variables specific to individual hexagons
 const Hexagon = function (x, y, index, frequency, hex) {
@@ -85,8 +91,8 @@ const Hexagon = function (x, y, index, frequency, hex) {
     vector3: [x + hex.rectangleWidth, y + hex.height + hex.sideLength],
     vector4: [x + hex.radius, y + hex.rectangleHeight],
     vector5: [x, y + hex.sideLength + hex.height],
-    vector6: [x, y + hex.height]
-  }
+    vector6: [x, y + hex.height],
+  };
 
   return Object.setPrototypeOf(newHex, hex);
-}
+};

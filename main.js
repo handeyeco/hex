@@ -2,7 +2,7 @@
   let bells;
   let activeFreqs = {};
   let { hex, hexCollect } = initHexagons();
-  let { ctx, canvas } = initCanvas(hex.rectangleWidth, hex.rectangleHeight);
+  let { ctx, canvas } = initCanvas();
   const { volume, fullscreen } = initControls();
 
   drawForMouseAndClick(
@@ -58,16 +58,19 @@
       }
     }
 
+    console.log(hexCollect);
+
     return { hex, hexCollect };
   }
 
-  function initCanvas(hexWidth, hexHeight) {
+  function initCanvas() {
     let container = document.getElementById("container");
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
 
-    const targetWidth = window.innerWidth + hexWidth;
-    const targetHeight = window.innerHeight + hexHeight;
+    const overflow = 100;
+    const targetWidth = window.innerWidth + overflow;
+    const targetHeight = window.innerHeight + overflow;
 
     canvas.width = targetWidth * window.devicePixelRatio;
     canvas.height = targetHeight * window.devicePixelRatio;
@@ -111,6 +114,7 @@
   });
 
   window.addEventListener("keydown", (e) => {
+    console.log(e.key);
     if (!ALLOWED_CHARS.includes(e.key) || activeFreqs[e.key]) return;
 
     initAudio();
